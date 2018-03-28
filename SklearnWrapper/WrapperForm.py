@@ -15,7 +15,34 @@ class WrapperForm(QWidget):
         self.onActivated(list(self.wrappers.keys())[0])
 
     def execute(self, button):
-        self.instance.execute()
+        for i in range(0, self.table.rowCount()):
+            param_name = self.table.item(i, 0).text()
+            func_name = "set_" + param_name
+            if hasattr(self.instance, func_name):
+                try:
+                    func = getattr(self.instance, func_name)
+                    func(self.table.item(i, 1).text())
+                except KeyboardInterrupt:
+                    raise
+                except Exception as e:
+                    self.error("Не удалось установить значение " + param_name + ": " + str(e))
+            else:
+                self.error("Невозможно установить значение параметра " + param_name + ".")
+                return
+        try:
+            self.instance.execute()
+        except KeyboardInterrupt:
+            raise
+        except Exception as e:
+            self.error(str(e))
+    
+    def error(self, message):
+        msg = QMessageBox()
+        msg.setText(message)
+        msg.setIcon(QMessageBox.Information)
+        msg.setWindowTitle("Ошибка!")
+        msg.setStandardButtons(QMessageBox.Ok)
+        retval = msg.exec_()
 
     def createLayout(self):
         self.mainLayout = QGridLayout()
