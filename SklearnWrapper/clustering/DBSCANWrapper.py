@@ -1,7 +1,6 @@
 import numpy as np
 from MethodWrapper import MethodWrapper
 from sklearn.cluster import DBSCAN
-from sklearn import metrics
 from sklearn.datasets.samples_generator import make_blobs
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
@@ -11,12 +10,12 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
     """DBSCAN wrapper"""
     
     def __init__(self):
+        MethodWrapper.__init__(self)
         self.eps = 0.1
         self.min_samples = 3
         self.metric = "euclidean"
         self.algorithm = "auto"
         self.leaf_size = 30
-        self.animation_delay = -1
         self.p = 2
         self.total_points = 300
 
@@ -39,9 +38,6 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
 
     def set_leaf_size(self, value:str):
         self.leaf_size = int(value)
-
-    def set_animation_delay(self, value:str):
-        self.animation_delay = float(value)
     
     def set_p(self, value:str):
         self.p = int(value)
@@ -54,9 +50,9 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
         black = [0, 0, 0, 1]
         plt.plot(dataset[:, 0], dataset[:, 1],  'o', markerfacecolor= black,
                      markeredgecolor = "k", markersize=5)
+        plt.ion()
         if animate:
-            plt.show()
-            plt.ion()
+            plt.show()            
             plt.pause(1)
 
         #simulate animation since there is no way to interfere in real processing
@@ -66,6 +62,7 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
         neighborFinder.fit(dataset) 
         neighborhood = neighborFinder.radius_neighbors(dataset, radius = self.eps, return_distance = False)
         visited = set()
+        open(file, 'w').close()
         with open(file, "a") as result_file: 
             for k, col in zip(unique_labels, colors):
                 if k != - 1:
@@ -86,7 +83,7 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
                             if animate:
                                 plt.plot(point[0], point[1], 'o', markerfacecolor= col,
                                     markeredgecolor = "k", markersize=5)
-                        if self.animation_delay != 0 & animate:
+                        if self.animation_delay > 0 & animate:
                             plt.pause(self.animation_delay)
                         for n in neighborhood[point_index]:
                             if ((n not in visited) & (db.labels_[n] == k)):
@@ -141,7 +138,7 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
         self.compute_animate(colors, core_samples_mask, db, labels, unique_labels, dataset,
                              (dataset.shape[1] < 3) & (self.animation_delay > 0), outfile)
         #if animation is disabled and dataset is drawable
-        if (dataset.shape[1] < 3) & (self.animation_delay == 0):
+        if (dataset.shape[1] < 3) & (self.animation_delay <= 0):
             self.draw(colors, core_samples_mask, labels, unique_labels, dataset) 
                     
         plt.title('Estimated number of clusters: %d' % n_clusters_)

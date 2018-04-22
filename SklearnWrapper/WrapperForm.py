@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from MethodWrapper import MethodWrapper
 from clustering import DBSCANWrapper
+from classification import MLPWrapper
 
 
 class WrapperForm(QWidget):
