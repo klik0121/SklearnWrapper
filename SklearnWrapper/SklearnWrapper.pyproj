@@ -28,6 +28,9 @@
     <Compile Include="classification\__init__.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="clustering\AffinityPropagationWrapper.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="clustering\__init__.py">
       <SubType>Code</SubType>
     </Compile>
