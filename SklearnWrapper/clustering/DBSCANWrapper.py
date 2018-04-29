@@ -45,7 +45,7 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
     def set_total_points(self, value:str):
         self.total_points = int(value)
 
-    def compute_animate(self, colors, core_samples_mask, db, labels, unique_labels, dataset, animate, file):
+    def compute_animate(self, colors, core_samples_mask, db, labels, unique_labels, dataset, animate, outfile):
          
         black = [0, 0, 0, 1]
         plt.plot(dataset[:, 0], dataset[:, 1],  'o', markerfacecolor= black,
@@ -62,8 +62,8 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
         neighborFinder.fit(dataset) 
         neighborhood = neighborFinder.radius_neighbors(dataset, radius = self.eps, return_distance = False)
         visited = set()
-        open(file, 'w').close()
-        with open(file, "a") as result_file: 
+
+        with open(outfile, "a") as result_file: 
             for k, col in zip(unique_labels, colors):
                 if k != - 1:
                     class_member_mask = (labels == k)
@@ -91,7 +91,7 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
                                 point_indices.append(n)
                 result_file.write("\n")
 
-    def draw(self, colors, core_samples_mask, labels, unique_labels, dataset):
+    def draw(self, colors, core_samples_mask, labels, unique_labels, dataset, outfile):
         for k, col in zip(unique_labels, colors):
             if k == -1:
                 # Black used for noise.
@@ -117,15 +117,15 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
                                     random_state=0)
         dataset = StandardScaler().fit_transform(dataset)
 
-
-        #temp code
-        #should be replaced with create file dialog
-        outfile = "result.txt"
-
         db = DBSCAN(eps=self.eps, min_samples=self.min_samples).fit(dataset)
         core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
         core_samples_mask[db.core_sample_indices_] = True
         labels = db.labels_
+
+        #temp code
+        #should be replaced with create file dialog
+        outfile = "result.txt"
+        open(outfile, 'w').close()
 
         # Number of clusters in labels, ignoring noise if present.
         n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)        
@@ -139,7 +139,7 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
                              (dataset.shape[1] < 3) & (self.animation_delay > 0), outfile)
         #if animation is disabled and dataset is drawable
         if (dataset.shape[1] < 3) & (self.animation_delay <= 0):
-            self.draw(colors, core_samples_mask, labels, unique_labels, dataset) 
+            self.draw(colors, core_samples_mask, labels, unique_labels, dataset, outfile) 
                     
         plt.title('Estimated number of clusters: %d' % n_clusters_)
         plt.ioff()
