@@ -3,7 +3,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from MethodWrapper import MethodWrapper
-from clustering import DBSCANWrapper
+from clustering import DBSCANWrapper, AffinityPropagationWrapper
 from classification import MLPWrapper
 
 
@@ -78,6 +78,7 @@ class WrapperForm(QWidget):
         self.instance = self.wrappers[text]()
         self.table.clear()
         self.table.setHorizontalHeaderLabels(["Параметр", "Значение"])
+        self.setWindowTitle(text)
         dict = self.instance.__dict__
         self.table.setRowCount(len(dict))
         i = 0
