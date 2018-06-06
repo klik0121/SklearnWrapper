@@ -1,0 +1,85 @@
+from MethodWrapper import MethodWrapper
+from sklearn.cluster.spectral import SpectralClustering
+from sklearn.datasets.samples_generator import make_blobs
+from sklearn.preprocessing import StandardScaler
+from matplotlib.colors import ListedColormap
+import matplotlib.pyplot as plt
+import numpy as np
+
+class SCWrapper(MethodWrapper, name = 'Spectral Clustering'):
+    """SpectralClustering wrapper"""
+
+    def __init__(self):
+        MethodWrapper.__init__(self)
+        self.total_points = 300
+        self.n_clusters = 8
+        self.eigen_solver = None
+        self.random_state = None
+        self.n_init = 10
+        self.gamma = 1.0
+        self.affinity = 'rbf'
+        self.n_neighbors = 10
+        self.eigen_tol = 0.0
+        self.assign_labels = 'kmeans'
+        self.degree = 3
+        self.coef0 = 1
+        self.n_jobs = 1
+
+    def set_total_points(self, value:str):
+        self.total_points = int(value)
+    def set_n_clusters(self, value:str):
+        self.n_clusters = int(value)
+    def set_eigen_solver(self, value:str):
+        self.eigen_solver = str(value) if value != 'None' else None
+    def set_random_state(self, value:str):
+        self.random_state = int(value) if value != 'None' else None
+    def set_n_init(self, value:str):
+        self.n_init = int(value)
+    def set_gamma(self, value:str):
+        self.gamma = float(value)
+    def set_affinity(self, value:str):
+        self.affinity = str(value)
+    def set_n_neighbors(self, value:str):
+        self.n_neighbors = int(value)
+    def set_eigen_tol(self, value:str):
+        self.eigen_tol = float(value)
+    def set_assign_labels(self, value:str):
+        self.assign_labels = str(value)
+    def set_degree(self, value:str):
+        self.degree = float(value)
+    def set_coef0(self, value:str):
+        self.coef0 = float(value)
+    def set_n_jobs(self, value:str):
+        self.n_jobs = int(value)
+
+    def execute(self):
+        centers = [[1, 1], [-1, -1], [1, -1], [-1, 1]]
+        X = make_blobs(n_samples=self.total_points, centers=centers, cluster_std=0.5,
+                                    random_state=0)[0]
+        X = StandardScaler().fit_transform(X)
+
+        clf = SpectralClustering(n_clusters=self.n_clusters, 
+                                 eigen_solver=self.eigen_solver, 
+                                 random_state=self.random_state, 
+                                 n_init=self.n_init, 
+                                 gamma=self.gamma, 
+                                 affinity=self.affinity, 
+                                 n_neighbors=self.n_neighbors, 
+                                 eigen_tol=self.eigen_tol, 
+                                 assign_labels=self.assign_labels, 
+                                 degree=self.degree, 
+                                 coef0=self.coef0,  
+                                 n_jobs=self.n_jobs)
+        y = clf.fit_predict(X)
+
+        labels = set(y)
+        colors = ListedColormap([plt.get_cmap(name = "gist_ncar")(each)
+            for each in np.linspace(0, 1, len(labels))])
+
+        X0, X1 = X[:,0], X[:,1]
+        plt.clf()
+        plt.scatter(X[:,0], X[:,1], c=y, cmap=colors, s=20, edgecolors='k')
+        plt.xlim(X0.min() - 0.5, X0.max() + 0.5)
+        plt.ylim(X1.min() - 0.5, X1.max() + 0.5)
+        plt.title('Spectral Clustering')
+        plt.show()

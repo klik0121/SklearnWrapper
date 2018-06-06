@@ -3,16 +3,16 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from MethodWrapper import MethodWrapper
-from clustering import DBSCANWrapper, AffinityPropagationWrapper
-from classification import MLPWrapper
+from clustering import DBSCANWrapper, AffinityPropagationWrapper, SCWrapper, GMWrapper
+from classification import MLPWrapper, GNBWrapper, KRRWrapper, LRWrapper
 
 
 class WrapperForm(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.wrappers = MethodWrapper.wrappers        
-        self.initUI()        
+        self.wrappers = MethodWrapper.wrappers
+        self.initUI()
         self.onActivated(list(self.wrappers.keys())[0])
 
     def execute(self, button):
@@ -36,7 +36,7 @@ class WrapperForm(QWidget):
             raise
         except Exception as e:
             self.error(str(e))
-    
+
     def error(self, message):
         msg = QMessageBox()
         msg.setText(message)
@@ -70,7 +70,7 @@ class WrapperForm(QWidget):
 
         self.setGeometry(300, 300, 300, 300)
         self.setWindowTitle(list(self.wrappers.keys())[0])
-        
+
         self.createLayout()
         self.show()
 
@@ -85,7 +85,4 @@ class WrapperForm(QWidget):
         for k, v in dict.items():
             self.table.setItem(i, 0, QTableWidgetItem(k))
             self.table.setItem(i, 1, QTableWidgetItem(str(v)))
-            i+=1           
-
-
-
+            i+=1
