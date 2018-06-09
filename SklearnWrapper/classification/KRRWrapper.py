@@ -27,7 +27,6 @@ class KRRWrapper(MethodWrapper, name = 'Kernel Ridge Regression'):
     def execute(self, dataset):
         # X - набор свойств, y - результат, зависящий от X
         X, y = dataset
-        file_name = "output.txt"
 
         X = StandardScaler().fit_transform(X)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = self.validation_fraction)
@@ -44,7 +43,7 @@ class KRRWrapper(MethodWrapper, name = 'Kernel Ridge Regression'):
                                  coef0 = self.coef0,
                                  gamma = self.gamma)
 
-        open(file_name, 'w').close() #clear file
+        open(self.file_name, 'w').close() #clear file
         classifier.fit(X_train, y_train)
         xxr,yyr = xx.ravel(), yy.ravel()
         cxy = np.c_[xx.ravel(), yy.ravel()]

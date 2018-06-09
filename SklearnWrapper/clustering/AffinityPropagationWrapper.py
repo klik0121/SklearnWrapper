@@ -88,10 +88,7 @@ class AffinityPropagationWrapper(MethodWrapper, name = "Affinity propagation"):
         #should be replaced with custom source
         X, labels_true = dataset
 
-        #temp code
-        #should be replaced with create file dialog
-        outfile = "result.txt"
-        open(outfile, 'w').close()
+        open(self.file_name, 'w').close()
 
         S = -euclidean_distances(X, squared=True)
         n_samples = S.shape[0]
@@ -104,7 +101,7 @@ class AffinityPropagationWrapper(MethodWrapper, name = "Affinity propagation"):
           random_state.randn(n_samples, n_samples))
         e = np.zeros((n_samples, self.convergence_iter))
         ind = np.arange(n_samples)
-        with open(outfile, "a") as result_file:
+        with open(self.file_name, "a") as result_file:
             for it in range(self.max_iter):
                 # tmp = A + S; compute responsibilities
                 np.add(A, S, tmp)

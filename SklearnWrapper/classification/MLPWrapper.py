@@ -26,10 +26,9 @@ class MLPWrapper(MethodWrapper, name = "MLPClassifier"):
         self.max_iter = 200
         self.tol = 1e-4
         self.validation_fraction = 0.1
+        self.shuffle = True
 
-    def execute(self, dataset):
-        file_name = "output.txt"
-
+    def execute(self, dataset):        
         X, y = dataset
         X = StandardScaler().fit_transform(X)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = self.validation_fraction)
@@ -56,7 +55,7 @@ class MLPWrapper(MethodWrapper, name = "MLPClassifier"):
             max_iter = self.max_iter
             iter_count = 1
 
-        sys.stdout = open(file_name, 'a')
+        sys.stdout = open(self.file_name, 'a')
 
         classifier = MLPClassifier(hidden_layer_sizes = self.hidden_layer_sizes,
                                    activation = self.activation,
@@ -80,7 +79,7 @@ class MLPWrapper(MethodWrapper, name = "MLPClassifier"):
                     edgecolors = 'k')
         plt.scatter(X_test[:, 0], X_test[:, 1], c = y_test, cmap = colors, alpha = 0.6,
                     edgecolors = 'k')
-        open(file_name, 'w').close() #clear file
+        open(self.file_name, 'w').close() #clear file
         contour = None
         for it in range(0, iter_count):
             if not(contour is None):
