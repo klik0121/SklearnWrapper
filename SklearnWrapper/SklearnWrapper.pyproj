@@ -23,6 +23,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="classification\DTCWrapper.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="classification\KRRWrapper.py">
       <SubType>Code</SubType>
     </Compile>

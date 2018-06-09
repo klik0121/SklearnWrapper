@@ -22,19 +22,6 @@ class AffinityPropagationWrapper(MethodWrapper, name = "Affinity propagation"):
         self.max_iter = 200
         self.convergence_iter = 15
         self.preference = -50
-        self.total_points = 300
-
-    def set_damping(self, value:str):
-        self.damping = float(value)
-    def set_max_iter(self, value:str):
-        self.max_iter = int(value)
-    def set_convergence_iter(self, value:str):
-        self.convergence_iter = int(value)
-    def set_preference(self, value:str):
-        self.preference = -abs(float(value))
-    def set_total_points(self, value:str):
-        self.total_points = int(value)
-
 
     def draw_result(self, A, it, n_samples, R, S, X, file):
         plt.clf()
@@ -44,15 +31,15 @@ class AffinityPropagationWrapper(MethodWrapper, name = "Affinity propagation"):
         axes.set_ylim([min(X[:, 1]) - 0.5, max(X[:, 1]) + 0.5])
 
         cluster_centers_indices, labels = self.get_result(A, it, n_samples, R, S, X, file)
-        if(not cluster_centers_indices is None):            
+        if(not cluster_centers_indices is None):
             n_clusters = len(cluster_centers_indices)
             unique_labels = set(labels)
             colors = ListedColormap([plt.get_cmap(name = "rainbow")(each)
                 for each in np.linspace(0, 1, len(unique_labels))])
             plt.scatter(X[:, 0], X[:, 1], c = labels, cmap=colors, edgecolors='k', s=40)
             plt.scatter(X[cluster_centers_indices][:, 0], X[cluster_centers_indices][:, 1],
-                        c = labels[cluster_centers_indices], cmap=colors, edgecolors='k', 
-                        s=120)           
+                        c = labels[cluster_centers_indices], cmap=colors, edgecolors='k',
+                        s=120)
             plt.title('Iteration ' + str(it) + ('. Estimated number of clusters: %d' % n_clusters))
             if(self.animation_delay > 0):
                 plt.pause(self.animation_delay)
@@ -60,7 +47,7 @@ class AffinityPropagationWrapper(MethodWrapper, name = "Affinity propagation"):
     def get_result(self, A, it, n_samples, R, S, X, file):
         I = np.where(np.diag(A + R) > 0)[0]
         K = I.size  # Identify exemplars
-        
+
         if K > 0:
             c = np.argmax(S[:, I], axis=1)
             c[I] = np.arange(K)  # Identify clusters
@@ -69,7 +56,7 @@ class AffinityPropagationWrapper(MethodWrapper, name = "Affinity propagation"):
                 ii = np.where(c == k)[0]
                 j = np.argmax(np.sum(S[ii[:, np.newaxis], ii], axis=0))
                 I[k] = ii[j]
-        
+
             c = np.argmax(S[:, I], axis=1)
             c[I] = np.arange(K)
             labels = I[c]
@@ -80,7 +67,7 @@ class AffinityPropagationWrapper(MethodWrapper, name = "Affinity propagation"):
             labels = np.empty((n_samples, 1))
             cluster_centers_indices = None
             labels.fill(np.nan)
-        
+
         file.write("Iteration " + str(it) + "\n\r")
         file.write("Cluster centers:\n\r")
         if(cluster_centers_indices is None):
@@ -96,12 +83,10 @@ class AffinityPropagationWrapper(MethodWrapper, name = "Affinity propagation"):
         file.write("\n\r")
         return cluster_centers_indices, labels
 
-    def execute(self):
+    def execute(self, dataset):
         #temp code
         #should be replaced with custom source
-        centers = [[1, 1], [-1, -1], [1, -1]]
-        X, labels_true = make_blobs(n_samples=self.total_points, centers=centers, cluster_std=0.5,
-                                    random_state=0)
+        X, labels_true = dataset
 
         #temp code
         #should be replaced with create file dialog
@@ -159,7 +144,7 @@ class AffinityPropagationWrapper(MethodWrapper, name = "Affinity propagation"):
 
                 if(self.animation_delay > 0):
                     self.draw_result(A, it, n_samples, R, S, X, result_file)
-                else: 
+                else:
                     self.get_result(A, it, n_samples, R, S, X, result_file)
 
                 if it >= self.convergence_iter:

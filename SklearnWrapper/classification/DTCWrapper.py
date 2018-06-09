@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib.colors import ListedColormap
-from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeClassifier
 from MethodWrapper import MethodWrapper
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -8,12 +8,23 @@ from sklearn import datasets
 import matplotlib.pyplot as plt
 import sys
 
-class LRWrapper(MethodWrapper, name = "Linear Regression"):
-    """LinearRegression wrapper"""
+class DTCWrapper(MethodWrapper, name = "Decision Tree"):
+    """DecisionTreeClassifier wrapper"""
 
     def __init__(self):
         MethodWrapper.__init__(self)
         self.validation_fraction = 0.1
+        self.criterion = 'gini'
+        self.splitter = 'best'
+        self.max_depth = None
+        self.min_samples_split = 2
+        self.min_samples_leaf = 1
+        self.min_weight_fraction_leaf = 0.
+        self.max_features = None
+        self.random_state = None
+        self.max_leaf_nodes = None
+        self.min_impurity_decrease = 0.
+        self.presort = False
 
     def make_meshgrid(self, X, Y, h=0.2):
         x_min, x_max = X.min() - 0.5, X.max() + 0.5
@@ -36,7 +47,17 @@ class LRWrapper(MethodWrapper, name = "Linear Regression"):
             for each in np.linspace(0, 1, len(labels))])
 
         sys.stdout = open(file_name, 'a')
-        classifier = LinearRegression()
+        classifier = DecisionTreeClassifier(criterion = self.criterion,
+                                            splitter = self.splitter,
+                                            max_depth = self.max_depth,
+                                            min_samples_split = self.min_samples_split,
+                                            min_samples_leaf = self.min_samples_leaf,
+                                            min_weight_fraction_leaf = self.min_weight_fraction_leaf,
+                                            max_features = self.max_features,
+                                            random_state = self.random_state,
+                                            max_leaf_nodes = self.max_leaf_nodes,
+                                            min_impurity_decrease = self.min_impurity_decrease,
+                                            presort = self.presort)
 
         open(file_name, 'w').close() #clear file
         # Обучение классификатора
@@ -52,6 +73,6 @@ class LRWrapper(MethodWrapper, name = "Linear Regression"):
         plt.ylim(yy.min(), yy.max())
         # Тестирование классификатора на новых данных
         score = classifier.score(X_test, y_test)
-        plt.title('Ordinary Least Squares Classification\n score: ' + str(round(score, 5)))
+        plt.title('Decision Tree Classification\n score: ' + str(round(score, 5)))
         plt.show()
         sys.stdout = sys.__stdout__
