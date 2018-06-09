@@ -12,7 +12,7 @@ import sys
 
 class MLPWrapper(MethodWrapper, name = "MLPClassifier"):
     """MLPClassifier wrapper"""
-    
+
     def __init__(self):
         MethodWrapper.__init__(self)
         self.hidden_layer_sizes = (100,)
@@ -24,43 +24,10 @@ class MLPWrapper(MethodWrapper, name = "MLPClassifier"):
         self.learning_rate_init = 0.001
         self.power_t = 0.5
         self.max_iter = 200
-        self.shuffle = True
         self.tol = 1e-4
         self.validation_fraction = 0.1
-        self.samples = 300
 
-    def set_hidden_layer_sizes(self, value:str):
-        self.hidden_layer_sizes = eval(value)   
-    def set_activation(self, value:str):
-        self.activation = value
-    def set_solver(self, value:str):
-        self.solver = value    
-    def set_alpha(self, value:str):
-        self.alpha = float(value)
-    def set_batch_size(self, value:str):
-        if(value == "auto"):
-            self.batch_size = "auto"
-        else: 
-            self.batch_size = int(value)
-    def set_learning_rate(self, value:str):
-        self.learning_rate = value
-    def set_learning_rate_init(self, value:str):
-        self.learning_rate_init = float(value)
-    def set_power_t(self, value:str):
-        self.power_t = float(value)
-    def set_max_iter(self, value:str):
-        self.max_iter = int(value)
-    def set_shuffle(self, value:str):
-        self.shuffle = bool(value)
-    def set_tol(self, value:str):
-        self.tol = float(value)
-    def set_validation_fraction(self, value:str):
-        self.validation_fraction = float(value)
-    def set_samples(self, value:str):
-        self.samples = int(value)
-
-    def execute(self):
-        dataset = make_moons(self.samples, self.shuffle, 0.3, 0)
+    def execute(self, dataset):
         file_name = "output.txt"
 
         X, y = dataset
@@ -84,7 +51,7 @@ class MLPWrapper(MethodWrapper, name = "MLPClassifier"):
             warm_start = True
             max_iter = 1
             iter_count = 200
-        else: 
+        else:
             warm_start = False
             max_iter = self.max_iter
             iter_count = 1
@@ -116,7 +83,7 @@ class MLPWrapper(MethodWrapper, name = "MLPClassifier"):
         open(file_name, 'w').close() #clear file
         contour = None
         for it in range(0, iter_count):
-            if not(contour is None):        
+            if not(contour is None):
                 for coll in contour.collections:
                     coll.remove()
             classifier.fit(X_train, y_train)
@@ -134,5 +101,3 @@ class MLPWrapper(MethodWrapper, name = "MLPClassifier"):
 
         plt.ioff()
         sys.stdout = sys.__stdout__
-
-

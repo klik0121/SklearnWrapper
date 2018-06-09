@@ -11,7 +11,7 @@ class GMWrapper(MethodWrapper, name = "Gaussian Mixture"):
 
     def __init__(self):
         MethodWrapper.__init__(self)
-        self.total_points = 300
+        self.n_components = 1
         self.covariance_type = 'full'
         self.tol = 1e-3
         self.reg_covar = 1e-6
@@ -20,30 +20,18 @@ class GMWrapper(MethodWrapper, name = "Gaussian Mixture"):
         self.init_params = 'kmeans'
         self.warm_start = False
 
-    def set_total_points(self, value:str):
-        self.total_points = int(value)
-    def set_covariance_type(self, value:str):
-        self.covariance_type = value
-    def set_tol(self, value:str):
-        self.tol = float(value)
-    def set_reg_covar(self, value:str):
-        self.reg_covar = float(value)
-    def set_max_iter(self, value:str):
-        self.max_iter = int(value)
-    def set_n_init(self, value:str):
-        self.n_init = int(value)
-    def set_init_params(self, value:str):
-        self.init_params = value
-    def set_warm_start(self, value:str):
-        self.warm_start = bool(value)
-
-    def execute(self):
-        centers = [[1, 1], [-1, -1], [1, -1], [-1, 1]]
-        X = make_blobs(n_samples=self.total_points, centers=centers, cluster_std=0.5,
-                                    random_state=0)[0]
+    def execute(self, dataset):
+        X = dataset[0]
         X = StandardScaler().fit_transform(X)
 
-        clf = GaussianMixture(n_components=4)
+        clf = GaussianMixture(n_components = self.n_components,
+                              covariance_type = self.covariance_type,
+                              tol = self.tol,
+                              reg_covar = self.reg_covar,
+                              max_iter = self.max_iter,
+                              n_init = self.n_init,
+                              init_params = self.init_params,
+                              warm_start = self.warm_start)
         clf.fit(X)
         y = clf.predict(X)
 
@@ -58,5 +46,3 @@ class GMWrapper(MethodWrapper, name = "Gaussian Mixture"):
         plt.ylim(X1.min() - 0.5, X1.max() + 0.5)
         plt.title('Gaussian Mixture Clustering')
         plt.show()
-
-

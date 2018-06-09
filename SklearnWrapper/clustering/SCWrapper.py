@@ -11,7 +11,6 @@ class SCWrapper(MethodWrapper, name = 'Spectral Clustering'):
 
     def __init__(self):
         MethodWrapper.__init__(self)
-        self.total_points = 300
         self.n_clusters = 8
         self.eigen_solver = None
         self.random_state = None
@@ -25,50 +24,21 @@ class SCWrapper(MethodWrapper, name = 'Spectral Clustering'):
         self.coef0 = 1
         self.n_jobs = 1
 
-    def set_total_points(self, value:str):
-        self.total_points = int(value)
-    def set_n_clusters(self, value:str):
-        self.n_clusters = int(value)
-    def set_eigen_solver(self, value:str):
-        self.eigen_solver = str(value) if value != 'None' else None
-    def set_random_state(self, value:str):
-        self.random_state = int(value) if value != 'None' else None
-    def set_n_init(self, value:str):
-        self.n_init = int(value)
-    def set_gamma(self, value:str):
-        self.gamma = float(value)
-    def set_affinity(self, value:str):
-        self.affinity = str(value)
-    def set_n_neighbors(self, value:str):
-        self.n_neighbors = int(value)
-    def set_eigen_tol(self, value:str):
-        self.eigen_tol = float(value)
-    def set_assign_labels(self, value:str):
-        self.assign_labels = str(value)
-    def set_degree(self, value:str):
-        self.degree = float(value)
-    def set_coef0(self, value:str):
-        self.coef0 = float(value)
-    def set_n_jobs(self, value:str):
-        self.n_jobs = int(value)
-
-    def execute(self):
-        centers = [[1, 1], [-1, -1], [1, -1], [-1, 1]]
-        X = make_blobs(n_samples=self.total_points, centers=centers, cluster_std=0.5,
-                                    random_state=0)[0]
+    def execute(self, dataset):
+        X = dataset[0]
         X = StandardScaler().fit_transform(X)
 
-        clf = SpectralClustering(n_clusters=self.n_clusters, 
-                                 eigen_solver=self.eigen_solver, 
-                                 random_state=self.random_state, 
-                                 n_init=self.n_init, 
-                                 gamma=self.gamma, 
-                                 affinity=self.affinity, 
-                                 n_neighbors=self.n_neighbors, 
-                                 eigen_tol=self.eigen_tol, 
-                                 assign_labels=self.assign_labels, 
-                                 degree=self.degree, 
-                                 coef0=self.coef0,  
+        clf = SpectralClustering(n_clusters=self.n_clusters,
+                                 eigen_solver=self.eigen_solver,
+                                 random_state=self.random_state,
+                                 n_init=self.n_init,
+                                 gamma=self.gamma,
+                                 affinity=self.affinity,
+                                 n_neighbors=self.n_neighbors,
+                                 eigen_tol=self.eigen_tol,
+                                 assign_labels=self.assign_labels,
+                                 degree=self.degree,
+                                 coef0=self.coef0,
                                  n_jobs=self.n_jobs)
         y = clf.fit_predict(X)
 

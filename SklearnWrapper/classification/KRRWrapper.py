@@ -12,41 +12,21 @@ class KRRWrapper(MethodWrapper, name = 'Kernel Ridge Regression'):
     def __init__(self):
         MethodWrapper.__init__(self)
         self.validation_fraction = 0.1
-        self.shuffle = True
         self.alpha = 0.8
-        self.samples = 300
         self.kernel = 'linear'
         self.gamma = None
         self.degree = 3
         self.coef0 = 1
 
-    def set_samples(self, value:str):
-        self.samples = int(value)
-    def set_validation_fraction(self, value:str):
-        self.validation_fraction = float(value)
-    def set_shuffle(self, value:str):
-        self.shuffle = bool(value)
-    def set_alpha(self, value:str):
-        self.alpha = float(value)
-    def set_kernel(self, value:str):
-        self.kernel = str(value)
-    def set_gamma(self, value:str):
-        if value != 'None':
-            self.gamma = float(value)
-    def set_degree(self, value:str):
-        self.degree = float(value)
-    def set_coef0(self, value:str):
-        self.coef0 = float(value)
-    
     def make_meshgrid(self, X, Y, h=0.2):
         x_min, x_max = X.min() - 0.5, X.max() + 0.5
         y_min, y_max = Y.min() - 0.5, Y.max() + 0.5
         xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
         return xx, yy
 
-    def execute(self):
+    def execute(self, dataset):
         # X - набор свойств, y - результат, зависящий от X
-        X, y = datasets.samples_generator.make_moons(self.samples, self.shuffle, 0.3, 0)
+        X, y = dataset
         file_name = "output.txt"
 
         X = StandardScaler().fit_transform(X)
@@ -58,10 +38,10 @@ class KRRWrapper(MethodWrapper, name = 'Kernel Ridge Regression'):
         colors = ListedColormap([plt.get_cmap(name = "rainbow")(each)
             for each in np.linspace(0, 1, len(labels))])
 
-        classifier = KernelRidge(alpha = self.alpha, 
-                                 kernel = self.kernel, 
-                                 degree = self.degree, 
-                                 coef0 = self.coef0, 
+        classifier = KernelRidge(alpha = self.alpha,
+                                 kernel = self.kernel,
+                                 degree = self.degree,
+                                 coef0 = self.coef0,
                                  gamma = self.gamma)
 
         open(file_name, 'w').close() #clear file

@@ -14,15 +14,6 @@ class LRWrapper(MethodWrapper, name = "Linear Regression"):
     def __init__(self):
         MethodWrapper.__init__(self)
         self.validation_fraction = 0.1
-        self.shuffle = True
-        self.samples = 300
-
-    def set_samples(self, value:str):
-        self.samples = int(value)
-    def set_validation_fraction(self, value:str):
-        self.validation_fraction = float(value)
-    def set_shuffle(self, value:str):
-        self.shuffle = bool(value)
 
     def make_meshgrid(self, X, Y, h=0.2):
         x_min, x_max = X.min() - 0.5, X.max() + 0.5
@@ -30,9 +21,9 @@ class LRWrapper(MethodWrapper, name = "Linear Regression"):
         xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
         return xx, yy
 
-    def execute(self):
+    def execute(self, dataset):
         # X - набор свойств, y - результат, зависящий от X
-        X, y = datasets.samples_generator.make_moons(self.samples, self.shuffle, 0.3, 0)
+        X, y = dataset
         file_name = "output.txt"
 
         X = StandardScaler().fit_transform(X)
