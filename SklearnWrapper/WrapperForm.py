@@ -4,8 +4,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from Datasets import get_gen_dict, get_dataset_dict
 from MethodWrapper import MethodWrapper
-from clustering import DBSCANWrapper, AffinityPropagationWrapper, SCWrapper, GMWrapper
-from classification import MLPWrapper, GNBWrapper, KRRWrapper, LRWrapper, DTCWrapper
+from clustering import DBSCANWrapper, AffinityPropagationWrapper, SCWrapper, GMWrapper, AgglomerativeClusteringWrapper
+from classification import MLPWrapper, GNBWrapper, KRRWrapper, LRWrapper, DTCWrapper, KNeighWrapper
 from ast import literal_eval
 
 class WrapperForm(QWidget):
