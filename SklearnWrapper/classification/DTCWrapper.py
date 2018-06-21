@@ -35,7 +35,6 @@ class DTCWrapper(MethodWrapper, name = "Decision Tree"):
     def execute(self, dataset):
         # X - набор свойств, y - результат, зависящий от X
         X, y = dataset
-        file_name = "output.txt"
 
         X = StandardScaler().fit_transform(X)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = self.validation_fraction)
@@ -46,7 +45,6 @@ class DTCWrapper(MethodWrapper, name = "Decision Tree"):
         colors = ListedColormap([plt.get_cmap(name = "rainbow")(each)
             for each in np.linspace(0, 1, len(labels))])
 
-        sys.stdout = open(file_name, 'a')
         classifier = DecisionTreeClassifier(criterion = self.criterion,
                                             splitter = self.splitter,
                                             max_depth = self.max_depth,
@@ -59,7 +57,6 @@ class DTCWrapper(MethodWrapper, name = "Decision Tree"):
                                             min_impurity_decrease = self.min_impurity_decrease,
                                             presort = self.presort)
 
-        open(file_name, 'w').close() #clear file
         # Обучение классификатора
         classifier.fit(X_train, y_train)
         Z = classifier.predict(np.c_[xx.ravel(), yy.ravel()])
@@ -75,4 +72,3 @@ class DTCWrapper(MethodWrapper, name = "Decision Tree"):
         score = classifier.score(X_test, y_test)
         plt.title('Decision Tree Classification\n score: ' + str(round(score, 5)))
         plt.show()
-        sys.stdout = sys.__stdout__
