@@ -4,8 +4,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from Datasets import get_gen_dict, get_dataset_dict
 from MethodWrapper import MethodWrapper
-from clustering import DBSCANWrapper, AffinityPropagationWrapper, SCWrapper, GMWrapper
-from classification import MLPWrapper, GNBWrapper, KRRWrapper, LRWrapper, DTCWrapper
+from clustering import *
+from classification import *
 from ast import literal_eval
 
 class WrapperForm(QWidget):
@@ -42,12 +42,16 @@ class WrapperForm(QWidget):
     def execute(self, button):
         """Задаёт параметры классификатора, затем запускает его"""
         self.instance.__dict__ = self.get_args(self.table_method)
-        try:
-            self.instance.execute(self.dataset)
-        except KeyboardInterrupt:
-            raise
-        except Exception as e:
-            self.error(str(e))
+
+        if hasattr(self, 'dataset'):
+            try:
+                self.instance.execute(self.dataset)
+            except KeyboardInterrupt:
+                raise
+            except Exception as e:
+                self.error(str(e))
+        else:
+            self.error("Отсутствует набор данных")
 
     def error(self, message):
         """Сообщение об ошибке"""
