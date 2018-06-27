@@ -31,7 +31,6 @@ class KNeighWrapper(MethodWrapper, name = 'The k-neighbors classification'):
 
         X, y = dataset
         X = StandardScaler().fit_transform(X)
-        sys.stdout = open(self.file_name, 'a')
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = self.validation_fraction)
         X0,X1 = X[:, 0], X[:, 1]
         xx, yy = self.make_meshgrid(X0, X1)
@@ -46,7 +45,6 @@ class KNeighWrapper(MethodWrapper, name = 'The k-neighbors classification'):
         xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
                              np.arange(y_min, y_max, h))
         Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
-        open(self.file_name, 'w').close() #clear file
         # Put the result into a color plot
         Z = Z.reshape(xx.shape)
         plt.figure()
@@ -61,4 +59,3 @@ class KNeighWrapper(MethodWrapper, name = 'The k-neighbors classification'):
         plt.title("3-Class classification (k = %i, weights = '%s')"
                   % (self.n_neighbors, self.weights) + ' score:' + str(round(score, 5)))
         plt.show()
-        sys.stdout = sys.__stdout__
