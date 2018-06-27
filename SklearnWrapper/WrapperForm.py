@@ -1,12 +1,14 @@
 import sys
+import os
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from Datasets import get_gen_dict, get_dataset_dict
 from MethodWrapper import MethodWrapper
-from clustering import DBSCANWrapper, AffinityPropagationWrapper, SCWrapper, GMWrapper, AgglomerativeClusteringWrapper
-from classification import MLPWrapper, GNBWrapper, KRRWrapper, LRWrapper, DTCWrapper, KNeighWrapper
+from clustering import *
+from classification import *
 from ast import literal_eval
+from contextlib import redirect_stdout
 
 class WrapperForm(QWidget):
 
@@ -16,6 +18,7 @@ class WrapperForm(QWidget):
         self.initUI()
         self.onActivated(list(self.wrappers.keys())[0])
         self.onActivatedData(list(get_gen_dict().keys())[0])
+        self.cwd = os.getcwd()
 
     def get_args(self, table):
         """Извлекает параметры из таблицы, формируя словарь"""
@@ -42,12 +45,24 @@ class WrapperForm(QWidget):
     def execute(self, button):
         """Задаёт параметры классификатора, затем запускает его"""
         self.instance.__dict__ = self.get_args(self.table_method)
-        try:
-            self.instance.execute(self.dataset)
-        except KeyboardInterrupt:
-            raise
-        except Exception as e:
-            self.error(str(e))
+        # Если метод создаёт свои файлы,
+        # они будут помещены в папку output в корне проекта
+        out_path = self.cwd + os.sep + "output"
+        if not os.path.exists(out_path): os.makedirs(out_path)
+        os.chdir(out_path)
+        f = open(type(self.instance).__name__ +
+            '-output.txt', 'a+')
+        with redirect_stdout(f):
+            if hasattr(self, 'dataset'):
+                try:
+                    self.instance.execute(self.dataset)
+                except KeyboardInterrupt:
+                    raise
+                except Exception as e:
+                    self.error(str(e))
+            else:
+                self.error("Отсутствует набор данных")
+            os.chdir(self.cwd)
 
     def error(self, message):
         """Сообщение об ошибке"""

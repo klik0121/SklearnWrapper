@@ -35,34 +35,33 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
         neighborFinder.fit(dataset)
         neighborhood = neighborFinder.radius_neighbors(dataset, radius = self.eps, return_distance = False)
         visited = set()
+        for k, col in zip(unique_labels, colors):
+            if k != - 1:
+                class_member_mask = (labels == k)
+                core = dataset[class_member_mask & core_samples_mask]
+                point_indices = [np.where(dataset == core[0])[0][0]]
+                while point_indices:
+                    point_index = point_indices.pop()
+                    visited.add(point_index)
+                    point = dataset[point_index]
+                    if point_index in db.core_sample_indices_:
+                        print("Cluster: " + str(k) + ", Type: Core, " + str(list(point)) + "\n")
+                        if animate:
+                            plt.plot(point[0], point[1], 'o', markerfacecolor= col,
+                                markeredgecolor = "k", markersize=10)
+                    else:
+                        print("Cluster: " + str(k) + ", Type: Common, " + str(list(point)) + "\n")
+                        if animate:
+                            plt.plot(point[0], point[1], 'o', markerfacecolor= col,
+                                markeredgecolor = "k", markersize=5)
+                    if self.animation_delay > 0 & animate:
+                        plt.pause(self.animation_delay)
+                    for n in neighborhood[point_index]:
+                        if ((n not in visited) & (db.labels_[n] == k)):
+                            visited.add(n)
+                            point_indices.append(n)
+            print("\n")
 
-        with open(self.file_name, "a") as result_file:
-            for k, col in zip(unique_labels, colors):
-                if k != - 1:
-                    class_member_mask = (labels == k)
-                    core = dataset[class_member_mask & core_samples_mask]
-                    point_indices = [np.where(dataset == core[0])[0][0]]
-                    while point_indices:
-                        point_index = point_indices.pop()
-                        visited.add(point_index)
-                        point = dataset[point_index]
-                        if point_index in db.core_sample_indices_:
-                            result_file.write("Cluster: " + str(k) + ", Type: Core, " + str(list(point)) + "\n")
-                            if animate:
-                                plt.plot(point[0], point[1], 'o', markerfacecolor= col,
-                                    markeredgecolor = "k", markersize=10)
-                        else:
-                            result_file.write("Cluster: " + str(k) + ", Type: Common, " + str(list(point)) + "\n")
-                            if animate:
-                                plt.plot(point[0], point[1], 'o', markerfacecolor= col,
-                                    markeredgecolor = "k", markersize=5)
-                        if self.animation_delay > 0 & animate:
-                            plt.pause(self.animation_delay)
-                        for n in neighborhood[point_index]:
-                            if ((n not in visited) & (db.labels_[n] == k)):
-                                visited.add(n)
-                                point_indices.append(n)
-                result_file.write("\n")
 
     def draw(self, colors, core_samples_mask, labels, unique_labels, dataset):
         for k, col in zip(unique_labels, colors):
@@ -92,8 +91,6 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
         core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
         core_samples_mask[db.core_sample_indices_] = True
         labels = db.labels_
-
-        open(self.file_name, 'w').close()
 
         # Number of clusters in labels, ignoring noise if present.
         n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)

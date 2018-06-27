@@ -33,11 +33,7 @@ class NBWrapper(MethodWrapper, name = "GaussianNB"):
         labels = set(y)
         colors = ListedColormap([plt.get_cmap(name = "rainbow")(each)
             for each in np.linspace(0, 1, len(labels))])
-
-        sys.stdout = open(self.file_name, 'a')
         classifier = GaussianNB()
-
-        open(self.file_name, 'w').close() #clear file
         # Обучение классификатора
         classifier.fit(X_train, y_train)
         Z = classifier.predict_proba(np.c_[xx.ravel(), yy.ravel()])[:, 1]
@@ -53,4 +49,3 @@ class NBWrapper(MethodWrapper, name = "GaussianNB"):
         score = classifier.score(X_test, y_test)
         plt.title('Gaussian Naive Bayes Classification\n score: ' + str(round(score, 5)))
         plt.show()
-        sys.stdout = sys.__stdout__

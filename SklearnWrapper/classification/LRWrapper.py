@@ -34,10 +34,7 @@ class LRWrapper(MethodWrapper, name = "Linear Regression"):
         colors = ListedColormap([plt.get_cmap(name = "rainbow")(each)
             for each in np.linspace(0, 1, len(labels))])
 
-        sys.stdout = open(self.file_name, 'a')
         classifier = LinearRegression()
-
-        open(self.file_name, 'w').close() #clear file
         # Обучение классификатора
         classifier.fit(X_train, y_train)
         Z = classifier.predict(np.c_[xx.ravel(), yy.ravel()])
@@ -53,4 +50,3 @@ class LRWrapper(MethodWrapper, name = "Linear Regression"):
         score = classifier.score(X_test, y_test)
         plt.title('Ordinary Least Squares Classification\n score: ' + str(round(score, 5)))
         plt.show()
-        sys.stdout = sys.__stdout__

@@ -28,7 +28,7 @@ class MLPWrapper(MethodWrapper, name = "MLPClassifier"):
         self.validation_fraction = 0.1
         self.shuffle = True
 
-    def execute(self, dataset):        
+    def execute(self, dataset):
         X, y = dataset
         X = StandardScaler().fit_transform(X)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = self.validation_fraction)
@@ -55,8 +55,6 @@ class MLPWrapper(MethodWrapper, name = "MLPClassifier"):
             max_iter = self.max_iter
             iter_count = 1
 
-        sys.stdout = open(self.file_name, 'a')
-
         classifier = MLPClassifier(hidden_layer_sizes = self.hidden_layer_sizes,
                                    activation = self.activation,
                                    solver = self.solver,
@@ -79,7 +77,6 @@ class MLPWrapper(MethodWrapper, name = "MLPClassifier"):
                     edgecolors = 'k')
         plt.scatter(X_test[:, 0], X_test[:, 1], c = y_test, cmap = colors, alpha = 0.6,
                     edgecolors = 'k')
-        open(self.file_name, 'w').close() #clear file
         contour = None
         for it in range(0, iter_count):
             if not(contour is None):
@@ -91,7 +88,7 @@ class MLPWrapper(MethodWrapper, name = "MLPClassifier"):
 
             Z = classifier.predict_proba(np.c_[xx.ravel(), yy.ravel()])[:, 1]
             Z = Z.reshape(xx.shape)
-            contour = plt.contourf(xx, yy, Z, cmap = colors, edgecolors = 'k', alpha = 0.6)
+            contour = plt.contourf(xx, yy, Z, cmap = colors, alpha = 0.6)
             if(self.animation_delay > 0):
                 plt.pause(self.animation_delay)
             plt.title("Iteration: " + str(it + 1) + " , loss: " + str(round(loss, 5)) + ", score:" + str(round(score, 5)))
@@ -99,4 +96,3 @@ class MLPWrapper(MethodWrapper, name = "MLPClassifier"):
                 break
 
         plt.ioff()
-        sys.stdout = sys.__stdout__
