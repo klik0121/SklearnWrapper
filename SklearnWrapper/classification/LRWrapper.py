@@ -35,7 +35,6 @@ class LRWrapper(MethodWrapper, name = "Linear Regression"):
             for each in np.linspace(0, 1, len(labels))])
 
         classifier = LinearRegression()
-
         # Обучение классификатора
         classifier.fit(X_train, y_train)
         Z = classifier.predict(np.c_[xx.ravel(), yy.ravel()])

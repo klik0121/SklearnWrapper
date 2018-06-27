@@ -29,7 +29,6 @@ class MLPWrapper(MethodWrapper, name = "MLPClassifier"):
         self.shuffle = True
 
     def execute(self, dataset):
-
         X, y = dataset
         X = StandardScaler().fit_transform(X)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = self.validation_fraction)

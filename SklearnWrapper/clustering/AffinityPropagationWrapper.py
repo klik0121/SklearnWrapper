@@ -86,7 +86,6 @@ class AffinityPropagationWrapper(MethodWrapper, name = "Affinity propagation"):
         #temp code
         #should be replaced with custom source
         X, labels_true = dataset
-
         S = -euclidean_distances(X, squared=True)
         n_samples = S.shape[0]
         random_state = np.random.RandomState(0)

@@ -6,6 +6,7 @@ class MethodWrapper(object):
 
     def __init__(self):
         self.animation_delay = -1
+        self.file_name = "output.txt"
 
     @classmethod
     def __init_subclass__(cls, name:str, **kwargs):

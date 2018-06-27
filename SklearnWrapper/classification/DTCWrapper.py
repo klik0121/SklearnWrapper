@@ -44,7 +44,6 @@ class DTCWrapper(MethodWrapper, name = "Decision Tree"):
         labels = set(y)
         colors = ListedColormap([plt.get_cmap(name = "rainbow")(each)
             for each in np.linspace(0, 1, len(labels))])
-
         classifier = DecisionTreeClassifier(criterion = self.criterion,
                                             splitter = self.splitter,
                                             max_depth = self.max_depth,

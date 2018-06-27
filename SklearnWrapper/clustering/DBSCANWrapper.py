@@ -62,6 +62,7 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
                             point_indices.append(n)
             print("\n")
 
+
     def draw(self, colors, core_samples_mask, labels, unique_labels, dataset):
         for k, col in zip(unique_labels, colors):
             if k == -1:

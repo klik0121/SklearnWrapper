@@ -33,9 +33,7 @@ class NBWrapper(MethodWrapper, name = "GaussianNB"):
         labels = set(y)
         colors = ListedColormap([plt.get_cmap(name = "rainbow")(each)
             for each in np.linspace(0, 1, len(labels))])
-
         classifier = GaussianNB()
-
         # Обучение классификатора
         classifier.fit(X_train, y_train)
         Z = classifier.predict_proba(np.c_[xx.ravel(), yy.ravel()])[:, 1]

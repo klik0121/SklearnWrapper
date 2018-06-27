@@ -12,7 +12,8 @@
     <OutputPath>.</OutputPath>
     <Name>SklearnWrapper</Name>
     <RootNamespace>SklearnWrapper</RootNamespace>
-    <InterpreterId>MSBuild|venvscl|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>
+    </InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,6 +25,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="classification\DTCWrapper.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="classification\KNeighWrapper.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="classification\KRRWrapper.py">
@@ -44,6 +48,7 @@
     <Compile Include="clustering\AffinityPropagationWrapper.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="clustering\AgglomerativeClusteringWrapper.py" />
     <Compile Include="clustering\GMWrapper.py">
       <SubType>Code</SubType>
     </Compile>
@@ -56,6 +61,7 @@
     <Compile Include="clustering\DBSCANWrapper.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Datasets.py" />
     <Compile Include="MethodWrapper.py">
       <SubType>Code</SubType>
     </Compile>
@@ -67,17 +73,6 @@
   <ItemGroup>
     <Folder Include="classification\" />
     <Folder Include="clustering\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Interpreter Include="..\..\venvscl\">
-      <Id>venvscl</Id>
-      <Version>3.6</Version>
-      <Description>venvscl (Python 3.6 (64-bit))</Description>
-      <InterpreterPath>Scripts\python.exe</InterpreterPath>
-      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
-      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
-      <Architecture>X64</Architecture>
-    </Interpreter>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
