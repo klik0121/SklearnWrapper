@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 import sys
+=======
+﻿import sys
 import os
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -27,6 +30,7 @@ class WrapperForm(QWidget):
             value = table.item(i, 1).text()
             try:
                 value = literal_eval(value)
+            except SyntaxError as e: pass
             except ValueError as e: pass
             args[table.item(i, 0).text()] = value
         return args
