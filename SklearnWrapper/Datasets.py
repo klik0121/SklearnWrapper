@@ -45,7 +45,7 @@ def get_from_url(url:str, dataset_name:str='toy', delimiter:str='\t', cache:bool
 def get_from_array(arr):
     sh = np.shape(arr)
     cols_num = sh[1]
-    return arr[:, 0: cols_num - 2], arr[:, cols_num - 1]
+    return arr[:, 0: cols_num - 1], arr[:, cols_num - 1]
 
 def get_from_file(file_name:str, delimiter:str):
     arr = np.genfromtxt(file_name, dtype=float, delimiter = delimiter)
