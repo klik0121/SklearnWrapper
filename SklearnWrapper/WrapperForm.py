@@ -38,6 +38,10 @@ class WrapperForm(QWidget):
         args = self.get_args(self.table_dataset)
         try:
             self.dataset = get_dataset_dict()[self.current_method](**args)
+            out_path="datasets"
+            if not os.path.exists(out_path): os.makedirs(out_path)
+            tmp = np.c_[self.dataset]
+            np.savetxt(out_path + "\\tmp.txt", tmp, delimiter = "\t")
         except KeyboardInterrupt:
             raise
         except Exception as e:
