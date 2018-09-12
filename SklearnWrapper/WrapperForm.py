@@ -1,6 +1,6 @@
 import sys
+from pathlib import Path
 import os
-import numpy as np
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -53,7 +53,7 @@ class WrapperForm(QWidget):
         self.instance.__dict__ = self.get_args(self.table_method)
         # Если метод создаёт свои файлы,
         # они будут помещены в папку output в корне проекта
-        out_path = self.cwd + os.sep + "output"
+        out_path = Path(sys.argv[0]).parent / "output"
         if not os.path.exists(out_path): os.makedirs(out_path)
         os.chdir(out_path)
         f = open(type(self.instance).__name__ +
@@ -68,7 +68,7 @@ class WrapperForm(QWidget):
                     self.error(str(e))
             else:
                 self.error("Отсутствует набор данных")
-            os.chdir(self.cwd)
+        os.chdir(self.cwd)
 
     def error(self, message):
         """Сообщение об ошибке"""

@@ -1,4 +1,4 @@
-﻿from MethodWrapper import MethodWrapper
+from MethodWrapper import MethodWrapper
 from sklearn.cluster import KMeans
 from sklearn.datasets.samples_generator import make_blobs
 from sklearn.preprocessing import StandardScaler
