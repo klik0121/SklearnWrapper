@@ -6,7 +6,7 @@ from matplotlib.colors import ListedColormap
 import matplotlib.pyplot as plt
 import numpy as np
 
-class GMWrapper(MethodWrapper, name = "K-Means"):
+class KMWrapper(MethodWrapper, name = "K-Means"):
     """KMeans wrapper"""
 
     def __init__(self):

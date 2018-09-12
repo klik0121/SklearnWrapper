@@ -1,3 +1,6 @@
 from os import listdir
+import sys
+from pathlib import Path
+directory = Path(sys.argv[0]).parent / 'classification'
 __all__= [name[:-3]
-    for name in listdir('./classification') if name[0] != '_']
+    for name in listdir(str(directory)) if name[0] != '_']
