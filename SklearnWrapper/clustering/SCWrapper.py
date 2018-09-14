@@ -1,10 +1,10 @@
 from MethodWrapper import MethodWrapper
 from sklearn.cluster.spectral import SpectralClustering
-from sklearn.datasets.samples_generator import make_blobs
 from sklearn.preprocessing import StandardScaler
 from matplotlib.colors import ListedColormap
 import matplotlib.pyplot as plt
 import numpy as np
+from output_clustering import output
 
 class SCWrapper(MethodWrapper, name = 'Spectral Clustering'):
     """SpectralClustering wrapper"""
@@ -26,6 +26,7 @@ class SCWrapper(MethodWrapper, name = 'Spectral Clustering'):
 
     def execute(self, dataset):
         X = dataset[0]
+        y_true = dataset[1]
         X = StandardScaler().fit_transform(X)
 
         clf = SpectralClustering(n_clusters=self.n_clusters,
@@ -41,7 +42,7 @@ class SCWrapper(MethodWrapper, name = 'Spectral Clustering'):
                                  coef0=self.coef0,
                                  n_jobs=self.n_jobs)
         y = clf.fit_predict(X)
-
+        output(type(self).__name__, y, y_true, self.n_clusters)
         labels = set(y)
         colors = ListedColormap([plt.get_cmap(name = "gist_ncar")(each)
             for each in np.linspace(0, 1, len(labels))])

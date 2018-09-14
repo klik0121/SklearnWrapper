@@ -1,4 +1,4 @@
-import sys
+import sys, traceback
 from pathlib import Path
 import os
 from PyQt5.QtGui import *
@@ -10,6 +10,7 @@ from clustering import *
 from classification import *
 from ast import literal_eval
 from contextlib import redirect_stdout
+import numpy as np
 
 class WrapperForm(QWidget):
 
@@ -20,6 +21,9 @@ class WrapperForm(QWidget):
         self.onActivated(list(self.wrappers.keys())[0])
         self.onActivatedData(list(get_gen_dict().keys())[0])
         self.cwd = os.getcwd()
+        self.log_path = Path(sys.argv[0]).parent / "error.log"
+        if os.path.exists(self.log_path):
+            os.remove(self.log_path)
 
     def get_args(self, table):
         """Извлекает параметры из таблицы, формируя словарь"""
@@ -46,6 +50,7 @@ class WrapperForm(QWidget):
             raise
         except Exception as e:
             self.error(str(e))
+            self.log_except(e)
 
 
     def execute(self, button):
@@ -57,7 +62,7 @@ class WrapperForm(QWidget):
         if not os.path.exists(out_path): os.makedirs(out_path)
         os.chdir(out_path)
         f = open(type(self.instance).__name__ +
-            '-output.txt', 'a+')
+            '-output.txt', 'w')
         with redirect_stdout(f):
             if hasattr(self, 'dataset'):
                 try:
@@ -66,9 +71,16 @@ class WrapperForm(QWidget):
                     raise
                 except Exception as e:
                     self.error(str(e))
+                    self.log_except(e)
             else:
                 self.error("Отсутствует набор данных")
         os.chdir(self.cwd)
+
+    def log_except(self, e):
+        """Записать ошибку и стек вызова в файл error.log"""
+        f = open(self.log_path, 'w')
+        traceback.print_exc(file=f)
+        f.close()
 
     def error(self, message):
         """Сообщение об ошибке"""

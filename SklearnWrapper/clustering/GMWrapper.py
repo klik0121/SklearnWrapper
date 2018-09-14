@@ -5,6 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from matplotlib.colors import ListedColormap
 import matplotlib.pyplot as plt
 import numpy as np
+from output_clustering import output
 
 class GMWrapper(MethodWrapper, name = "Gaussian Mixture"):
     """GaussianMixture wrapper"""
@@ -22,6 +23,7 @@ class GMWrapper(MethodWrapper, name = "Gaussian Mixture"):
 
     def execute(self, dataset):
         X = dataset[0]
+        y_true = dataset[1]
         X = StandardScaler().fit_transform(X)
 
         clf = GaussianMixture(n_components = self.n_components,
@@ -34,7 +36,7 @@ class GMWrapper(MethodWrapper, name = "Gaussian Mixture"):
                               warm_start = self.warm_start)
         clf.fit(X)
         y = clf.predict(X)
-
+        output(type(self).__name__, y, y_true, self.n_components)
         labels = set(y)
         colors = ListedColormap([plt.get_cmap(name = "gist_ncar")(each)
             for each in np.linspace(0, 1, len(labels))])
