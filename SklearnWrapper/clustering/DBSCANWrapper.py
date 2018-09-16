@@ -82,12 +82,10 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
 
     def execute(self, dataset):
 
-        #temp code
-        #should be replaced with custom source
-        dataset, labels_true = dataset
-        dataset = StandardScaler().fit_transform(dataset)
+        x, labels_true = dataset
+        x = StandardScaler().fit_transform(x)
 
-        db = DBSCAN(eps=self.eps, min_samples=self.min_samples).fit(dataset)
+        db = DBSCAN(eps=self.eps, min_samples=self.min_samples).fit(x)
         core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
         core_samples_mask[db.core_sample_indices_] = True
         labels = db.labels_
@@ -100,11 +98,13 @@ class DBSCANWrapper(MethodWrapper, name = "DBSCAN"):
                   for each in np.linspace(0, 1, len(unique_labels))]
 
 
-        self.compute_animate(colors, core_samples_mask, db, labels, unique_labels, dataset,
-                             (dataset.shape[1] < 3) & (self.animation_delay > 0))
+        self.compute_animate(colors, core_samples_mask, db, labels, unique_labels, x,
+                             (x.shape[1] < 3) & (self.animation_delay > 0))
         #if animation is disabled and dataset is drawable
-        if (dataset.shape[1] < 3) & (self.animation_delay <= 0):
-            self.draw(colors, core_samples_mask, labels, unique_labels, dataset)
-
+        if (x.shape[1] < 3) & (self.animation_delay <= 0):
+            self.draw(colors, core_samples_mask, labels, unique_labels, x)
+        
+        stats = self.get_stats(labels_true, labels)
+        print(stats.get_formatted())
         plt.title('Estimated number of clusters: %d' % n_clusters_)
         plt.ioff()

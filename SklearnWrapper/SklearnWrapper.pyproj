@@ -24,12 +24,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-<<<<<<< HEAD
-=======
     <Compile Include="classification\AdaBoostWrapper.py">
       <SubType>Code</SubType>
     </Compile>
->>>>>>> andrew super code
     <Compile Include="classification\DTCWrapper.py">
       <SubType>Code</SubType>
     </Compile>
@@ -48,12 +45,9 @@
     <Compile Include="classification\GNBWrapper.py">
       <SubType>Code</SubType>
     </Compile>
-<<<<<<< HEAD
-=======
     <Compile Include="classification\RNDWrapper.py">
       <SubType>Code</SubType>
     </Compile>
->>>>>>> andrew super code
     <Compile Include="classification\__init__.py">
       <SubType>Code</SubType>
     </Compile>
@@ -64,10 +58,7 @@
     <Compile Include="clustering\GMWrapper.py">
       <SubType>Code</SubType>
     </Compile>
-<<<<<<< HEAD
-=======
     <Compile Include="clustering\KMWrapper.py" />
->>>>>>> andrew super code
     <Compile Include="clustering\SCWrapper.py">
       <SubType>Code</SubType>
     </Compile>
