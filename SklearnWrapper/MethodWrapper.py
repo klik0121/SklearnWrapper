@@ -106,10 +106,9 @@ class Stats(object):
         formatStr += "Средняя правильность: {12} \n\r "
         formatStr += "Интегральная оценка по классам (I = P + R + A): \n\r {13} \n\r "
         formatStr += "Средняя интегральная оценка:{14}  \n\r "
-        formatStr = formatStr.format(self.confusionMatrix, self.TP, self.FP, self.TN, self.FN, self.ClassPresicions, self.AveragePresicion, 
+        return formatStr.format(self.confusionMatrix, self.TP, self.FP, self.TN, self.FN, self.ClassPresicions, self.AveragePresicion, 
                       self.ClassCompleteness, self.AverageCompleteness, self.ClassError, self.AverageError,
                       self.ClassCorrectness, self.AverageCorrectness, self.ClassIntegral, self.AverageIntegral)
-        return formatStr.encode(encoding='utf-8', errors='strict')
         
         
         

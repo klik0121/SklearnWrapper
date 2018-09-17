@@ -137,7 +137,7 @@ class AffinityPropagationWrapper(MethodWrapper, name = "Affinity propagation"):
             K = np.sum(E, axis=0)
 
             if(self.animation_delay > 0):
-                self.draw_result(A, it, n_samples, R, S, X, labels_true)
+                self.draw_result(A, it, n_samples, R, S, X)
             else:
                 self.get_result(A, it, n_samples, R, S, X)
 
