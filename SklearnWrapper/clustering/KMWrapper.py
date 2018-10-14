@@ -5,6 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from matplotlib.colors import ListedColormap
 import matplotlib.pyplot as plt
 import numpy as np
+from output_clustering import output
 
 class KMWrapper(MethodWrapper, name = "K-Means"):
     """KMeans wrapper"""
@@ -25,12 +26,13 @@ class KMWrapper(MethodWrapper, name = "K-Means"):
 
     def execute(self, dataset):
         X = dataset[0]
+        y_true = dataset[1]
         X = StandardScaler().fit_transform(X)
         clf = KMeans( n_clusters            = self.n_clusters,
                       init                  = self.init,
                       n_init                = self.n_init,
                       max_iter              = self.max_iter,
-                      tol                   = self.tol, 
+                      tol                   = self.tol,
                       precompute_distances  = self.precompute_distances,
                       verbose               = self.verbose,
                       random_state          = self.random_state,
@@ -39,7 +41,7 @@ class KMWrapper(MethodWrapper, name = "K-Means"):
                       algorithm             = self.algorithm )
         clf.fit(X)
         y = clf.predict(X)
-
+        output(type(self).__name__, y, y_true, self.n_clusters)
         labels = set(y)
         colors = ListedColormap([plt.get_cmap(name = "gist_ncar")(each)
             for each in np.linspace(0, 1, len(labels))])

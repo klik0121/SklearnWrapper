@@ -60,6 +60,6 @@ def output(class_name, y, y_true = None, n_clusters = 0):
     print('//Predicted clusters:')
     write_clusters(y, n_clusters)
     print('//Clustering quality estimation:')
-    if y_true:
+    if y_true is not None:
         write_perf_params(y, y_true)
     print('//END OF LOG')
