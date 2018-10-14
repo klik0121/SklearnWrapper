@@ -43,6 +43,7 @@ class AffinityPropagationWrapper(MethodWrapper, name = "Affinity propagation"):
             if(self.animation_delay > 0):
                 plt.pause(self.animation_delay)
 
+
     def get_result(self, A, it, n_samples, R, S, X):
         I = np.where(np.diag(A + R) > 0)[0]
         K = I.size  # Identify exemplars
@@ -148,3 +149,6 @@ class AffinityPropagationWrapper(MethodWrapper, name = "Affinity propagation"):
                     break
 
         self.draw_result(A, it, n_samples, R, S, X)
+        _, labels = self.get_result(A, it, n_samples, R, S, X)
+        stats = self.get_stats(labels_true, labels)
+        print(stats.get_formatted())

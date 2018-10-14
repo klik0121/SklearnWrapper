@@ -41,7 +41,6 @@ class AgglomerativeClusteringWrapper(MethodWrapper, name = "AgglomerativeCluster
     ##def set_total_points(self, value:str):
     ##    self.total_points = int(value)
 
-
     def execute(self, dataset):
         #centers = [[1, 1], [-1, -1], [1, -1]]
         #dataset, labels_true = make_blobs(n_samples=self.total_points, centers=centers, cluster_std=0.4,random_state=0)
@@ -51,12 +50,14 @@ class AgglomerativeClusteringWrapper(MethodWrapper, name = "AgglomerativeCluster
         digits = datasets.load_digits(n_class=10)
         X = dataset
         #y = digits.target
-        n_samples, n_features = X.shape
-        np.random.seed(0)
+        #n_samples, n_features = X.shape
+        #np.random.seed(0)
+
         #shift = lambda x: ndimage.shift(x.reshape((8, 8)),.3 * np.random.normal(size=2),mode='constant',).ravel()
         #X = np.concatenate([X, np.apply_along_axis(shift, 1, X)])
         #Y = np.concatenate([y, y], axis=0)
-        X_red = manifold.SpectralEmbedding(n_components=2).fit_transform(X)
+        #X_red = manifold.SpectralEmbedding(n_components=2).fit_transform(X)
+        X_red = StandardScaler().fit_transform(X)
         #for linkage in ('ward', 'average', 'complete'):
         #    clustering = AgglomerativeClustering(linkage=linkage, n_clusters=10)
         #    t0 = time()
@@ -67,6 +68,7 @@ class AgglomerativeClusteringWrapper(MethodWrapper, name = "AgglomerativeCluster
 
         clustering = AgglomerativeClustering(n_clusters=self.n_clusters, affinity=self.affinity, compute_full_tree=self.compute_full_tree,linkage=self.linkage)
         clustering.fit(X_red)
+        labels = clustering.labels_
         #plot_clustering(X_red, X, clustering.labels_, "%s linkage" % linkage)
         x_min, x_max = np.min(X_red, axis=0), np.max(X_red, axis=0)
         X_red = (X_red - x_min) / (x_max - x_min)
@@ -85,22 +87,5 @@ class AgglomerativeClusteringWrapper(MethodWrapper, name = "AgglomerativeCluster
         plt.tight_layout()
         plt.show()
 
-
-    #----------------------------------------------------------------------
-    # Visualize the clustering
-    #def plot_clustering(X_red, X, labels, title=None):
-    #    x_min, x_max = np.min(X_red, axis=0), np.max(X_red, axis=0)
-    #    X_red = (X_red - x_min) / (x_max - x_min)
-
-    #    plt.figure(figsize=(6, 4))
-    #    for i in range(X_red.shape[0]):
-    #        plt.text(X_red[i, 0], X_red[i, 1], str(y[i]),
-    #                 color=plt.cm.spectral(labels[i] / 10.),
-    #                 fontdict={'weight': 'bold', 'size': 9})
-
-    #    plt.xticks([])
-    #    plt.yticks([])
-    #    if title is not None:
-    #        plt.title(title, size=17)
-    #    plt.axis('off')
-    #    plt.tight_layout()
+        stats = self.get_stats(labels_true, labels)
+        print(stats.get_formatted())

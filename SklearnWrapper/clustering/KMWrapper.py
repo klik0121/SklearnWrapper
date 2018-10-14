@@ -12,7 +12,7 @@ class KMWrapper(MethodWrapper, name = "K-Means"):
 
     def __init__(self):
         MethodWrapper.__init__(self)
-        self.n_clusters = 8
+        self.n_clusters = 3
         self.init = 'k-means++'
         self.n_init = 10
         self.max_iter = 300
@@ -25,6 +25,7 @@ class KMWrapper(MethodWrapper, name = "K-Means"):
         self.algorithm = 'auto'
 
     def execute(self, dataset):
+        labels_true = dataset[1]
         X = dataset[0]
         y_true = dataset[1]
         X = StandardScaler().fit_transform(X)
@@ -42,6 +43,7 @@ class KMWrapper(MethodWrapper, name = "K-Means"):
         clf.fit(X)
         y = clf.predict(X)
         output(type(self).__name__, y, y_true, self.n_clusters)
+        lab2 = clf.labels_
         labels = set(y)
         colors = ListedColormap([plt.get_cmap(name = "gist_ncar")(each)
             for each in np.linspace(0, 1, len(labels))])
@@ -53,3 +55,5 @@ class KMWrapper(MethodWrapper, name = "K-Means"):
         plt.ylim(X1.min() - 0.5, X1.max() + 0.5)
         plt.title('K-Means Clustering')
         plt.show()
+        stats = self.get_stats(labels_true, lab2)
+        print(stats.get_formatted())
