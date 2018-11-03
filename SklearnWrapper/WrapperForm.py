@@ -42,10 +42,6 @@ class WrapperForm(QWidget):
         args = self.get_args(self.table_dataset)
         try:
             self.dataset = get_dataset_dict()[self.current_method](**args)
-            out_path="datasets"
-            if not os.path.exists(out_path): os.makedirs(out_path)
-            tmp = np.c_[self.dataset]
-            np.savetxt(out_path + "\\tmp.txt", tmp, delimiter = "\t")
         except KeyboardInterrupt:
             raise
         except Exception as e:
@@ -106,11 +102,16 @@ class WrapperForm(QWidget):
         self.mainLayout.addWidget(table, 1, x, 8, 1)
         return table
 
-    def create_button(self, label, cnt, y):
+    def create_button(self, label, cnt, x):
         """Кнопка "Go", строка 9"""
         btn = QPushButton(label)
         btn.clicked.connect(cnt)
-        self.mainLayout.addWidget(btn, 9, y)
+        self.mainLayout.addWidget(btn, 9, x)
+
+    def addHorizontalButton(self, layout, label, cnt):
+        btn = QPushButton(label)
+        btn.clicked.connect(cnt)
+        layout.addWidget(btn)
 
     def createLayout(self):
         """Инициализирует и размещает элементы формы"""
@@ -120,7 +121,15 @@ class WrapperForm(QWidget):
         # Методы наборов данных
         self.create_combo(get_gen_dict().keys(), 0, self.onActivatedData)
         self.table_dataset = self.create_param_table(0)
-        self.create_button('Create dataset', self.init_dataset, 0)
+        #self.create_button('Create dataset', self.init_dataset, 0, 1)
+        #self.create_button('Save dataset', self.saveDataset, 1, 1)
+
+        hblayout = QHBoxLayout()
+        self.addHorizontalButton(hblayout, 'Create dataset', self.init_dataset)
+        self.addHorizontalButton(hblayout, 'Load dataset', self.loadDataset)
+        self.addHorizontalButton(hblayout, 'Save dataset', self.saveDataset)
+        self.mainLayout.addLayout(hblayout, 9, 0)
+
 
         # Методы анализа данных
         self.create_combo(self.wrappers.keys(), 1, self.onActivated)
@@ -130,6 +139,28 @@ class WrapperForm(QWidget):
         # Фиксированный размер формы
         self.mainLayout.setSizeConstraint(3)
         self.setLayout(self.mainLayout)
+
+    def saveDataset(self):
+        """Сохранение набора данных в файл"""
+        if self.dataset:
+            fileName = QFileDialog.getSaveFileName(
+                self, "Save File", "",
+                "Comma-separated values file (*.csv)")[0]
+            if fileName:
+                np.savetxt(fileName, np.c_[self.dataset], delimiter = "\t")
+
+    def get_from_array(self, arr):
+        sh = np.shape(arr)
+        cols_num = sh[1]
+        return arr[:, 0: cols_num - 1], arr[:, cols_num - 1]
+
+    def loadDataset(self):
+        fileName = QFileDialog.getOpenFileName(
+            self, "Open File", "",
+            "Comma-separated values file (*.csv)")[0]
+        if fileName:
+            self.dataset = self.get_from_array(
+            np.genfromtxt(fileName, dtype=float, delimiter = '\t'))
 
     def initUI(self):
 
